@@ -3,12 +3,18 @@ package com.example.ejercicio_16_m5
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.ejercicio_16_m5.databinding.ItemLayoutBinding
 
 class Adapter: RecyclerView.Adapter <Adapter.ViewHolder>(){
     var paises = mutableListOf<Pais>()
+    var callback: PaisCallback?= null
+
+    fun setPaisCallback(c: PaisCallback){
+       this.callback = c
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,12 +35,26 @@ class Adapter: RecyclerView.Adapter <Adapter.ViewHolder>(){
         this.paises = paises.toMutableList()
     }
 
-    class ViewHolder(val binding: ItemLayoutBinding): RecyclerView.ViewHolder (binding.root){
-        fun bind(pais : Pais){
-            binding.textNombrePais.text = pais.nombre
-            binding.imageBandera.load(pais.imgUrl)
+     inner class ViewHolder(val binding: ItemLayoutBinding): RecyclerView.ViewHolder (binding.root){
+        fun bind(item : Pais){
+            binding.textNombrePais.text = item.nombre
+            binding.imageBandera.load(item.imgUrl)
+            binding.cardView.setOnClickListener(View.OnClickListener {
+
+                val texto = "Pais:${item.nombre}    Poblacion:${item.poblacion}"
+                callback?.showCountry(texto)
+            })
+
+
 
         }
 
+
+
+
+
+    }
+    interface PaisCallback {
+        fun showCountry(s: String)
     }
 }
